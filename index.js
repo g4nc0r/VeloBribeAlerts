@@ -6,7 +6,9 @@ require('log-timestamp');
 const { externalBribeAddresses } = require('./externalBribeAddresses.js');
 
 // Discord webhook
-const WebhookURL = process.env['TEST_URL']
+const WebhookURL = process.env['TEST_URL'];
+// env variables to be set via Replit
+const port = process.env['PORT'];
 const hook = new Webhook(WebhookURL);
 
 // init the Discord webhook attributes
@@ -20,17 +22,17 @@ const app = express();
 // this application will receive JSON data
 app.use(bodyParser.json());
 
-// start the server on port 3100
-app.listen(3100, () => console.log(`[*] Running on port 3100`));
+// start the server on PORT
+app.listen(port, () => console.log('\x1b[32m%s\x1b[0m', `[*] Running on port ${port}`));
 
 // root GET for uptime pinging
-app.get("/", (request, response) => {
-  console.log("[~] GET request received");
+app.get('/', (request, response) => {
+  console.log('\x1b[34m%s\x1b[0m', '[~] GET request received');
   response.status(200).send();
 });
 
 // GET for testing
-app.get("/test", (request, response) => {
+app.get('/test', (request, response) => {
   // test webhook
   const embed = new MessageBuilder()
   .setTitle('🚵‍♂️  **VELO/USDC Pool**')
@@ -40,13 +42,13 @@ app.get("/test", (request, response) => {
   .setDescription('Bribe deposited')
   .setTimestamp();
 
-  hook.send(embed).then(console.log("- Successfully sent webhook!"));
+  hook.send(embed).then(console.log('- Successfully sent webhook!'));
   response.status(200).send();
 });
 
 // POST for Alchemy webhook
-app.post("/webhook", (request, response) => {
-  console.log(`[!] NEW BRIBE DETECTED BY ALCHEMY`);
+app.post('/webhook', (request, response) => {
+  console.log('\x1b[33m%s\x1b[0m', '[!] New bribe detected by Alchmey');
   console.log(request.body.event.activity[0]);
   const activity = request.body.event.activity[0];
 
@@ -58,18 +60,18 @@ app.post("/webhook", (request, response) => {
 
     if(externalBribeAddresses[activity.toAddress]) {
 
-      const txHash = String(activity.hash).substring(0, 4) + "..." + String(activity.hash).substring(60);  
-      const pool = externalBribeAddresses[activity.toAddress];
+      const txHash = String(activity.hash).substring(0, 4) + '...' + String(activity.hash).substring(60);  
+      const pool = externalBribeAddresses[activity.toAddress]['pool_name'];
   
       const embed = new MessageBuilder()
         .setTitle(`🚵‍♂️  **${pool} Pool**`)
-        .setColor('#016962')
+        .setColor(externalBribeAddresses[activity.toAddress]['color'])
         .addField(`**${activity.value} ${activity.asset}**`, `*TxHash: [${txHash}](https://optimistic.etherscan.io/tx/${activity.hash})*`, true)
         .setThumbnail(IMAGE_URL)
         .setDescription('Bribe deposited')
         .setTimestamp();
   
-        hook.send(embed).then(console.log("- Successfully sent to Discord"));
+        hook.send(embed).then(console.log('- Successfully sent to Discord'));
     }
   }
 });

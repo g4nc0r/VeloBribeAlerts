@@ -1,8 +1,5 @@
 /node_modules
+/reference
 .env
 README.md 
-alchemyResponse.json
 externalBribeAddresses.js
-internalBribeAddresses.js
-notifyv2.json
-bribeAddresses.json
