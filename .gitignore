@@ -1,0 +1,8 @@
+/node_modules
+.env
+README.md 
+alchemyResponse.json
+externalBribeAddresses.js
+internalBribeAddresses.js
+notifyv2.json
+bribeAddresses.json
