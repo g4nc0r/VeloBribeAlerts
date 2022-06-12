@@ -6,10 +6,10 @@ require('log-timestamp');
 const { externalBribeAddresses } = require('./externalBribeAddresses.js');
 
 // env variables to be set via Replit
-const WebhookURL = process.env['TEST_URL'];
+const webhookURL = process.env['TEST_URL'];
 const port = process.env['PORT'];
 // Discord webhook
-const hook = new Webhook(WebhookURL);
+const hook = new Webhook(webhookURL);
 
 // init the Discord webhook attributes
 hook.setUsername('VeloBribeAlerts');
